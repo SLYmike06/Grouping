@@ -80,7 +80,7 @@ public class grouping {
     }
     public static void main(String args[]) throws IOException {
         grouping test = new grouping();
-        //test.printStudents();
+        test.printStudents();
         System.out.println(test.verifyData());
     //      ArrayList<Preference> curPrefer = stu.getPrefer();
          //   for(Preference prefer: curPrefer) {
