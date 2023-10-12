@@ -16,7 +16,7 @@ public class grouping {
         readFile();
     }
     public void readFile() throws IOException {
-        Reader reader = Files.newBufferedReader(Paths.get("C:/Users/syang2024/IdeaProjects/Grouping/Untitled spreadsheet - Sheet1 (4).csv"));
+        Reader reader = Files.newBufferedReader(Paths.get("./Untitled spreadsheet - Sheet1 (4).csv"));
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
         int num = 0;
         int groupSize = 0;
