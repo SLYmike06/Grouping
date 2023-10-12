@@ -43,6 +43,17 @@ public class grouping {
             }
         }
     }
+
+    public int  scoring(Group group) {
+        int groupScore = 0;
+        for(int i = 0; i < group.studentList.size();i++) {
+            Student curr = group.studentList.get(i);
+            if(curr.getPrefer().contains(curr)) {
+                groupScore +=10;
+            }
+        }
+        return groupScore;
+    }
     public boolean verifyData() {
         for(Student curStu: studentList) {
             ArrayList<Preference> curPrefer = curStu.getPrefer();
