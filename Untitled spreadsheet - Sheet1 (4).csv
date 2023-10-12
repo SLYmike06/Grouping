@@ -1,6 +1,11 @@
-4,,,,
-2,,,,
-studentA,p,studentB,,
-studentB,p,studentA,,
-studentC,n,studentB,p,studentA
-studentD,n,studentB,,
+4,,,,,,
+2,,,,,,
+studentA,p,StudentI,p,studentB,p,studentB
+studentB,p,studentA,p,StudentF,p,studentC
+studentC,p,studentB,p,StudentG,p,StudentH
+studentD,p,studentC,p,studentC,p,StudentI
+StudentE,p,studentD,p,studentD,p,studentA
+StudentF,p,StudentE,p,StudentE,p,studentD
+StudentG,p,StudentF,p,StudentH,p,StudentE
+StudentH,p,StudentG,p,StudentI,p,StudentF
+StudentI,p,StudentH,p,studentA,p,StudentH

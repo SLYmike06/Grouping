@@ -30,4 +30,16 @@ public class Group {
     public void setGroupNum(int groupNum) {
         this.groupNum = groupNum;
     }
+
+    public void setStudentList(ArrayList<Student> studentList) {
+        this.studentList = studentList;
+    }
+
+    public String toString() {
+        String output = "Group Number: " + groupNum;
+        for (Student student: studentList ) {
+            output += " Student: " + student.getName();
+        }
+        return output;
+    }
 }

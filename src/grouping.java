@@ -73,15 +73,39 @@ public class grouping {
         }
         return null;
     }
+    public void printStudents(ArrayList<Group> groups) {
+        for(Group grp: groups) {
+            System.out.println(grp);
+        }
+    }
     public void printStudents() {
         for(Student curStu: studentList) {
             System.out.println(curStu);
         }
     }
+
+    public ArrayList<Group> demoGroup() {
+        ArrayList<Group> groups = new ArrayList<Group>();
+        int count = 1;
+        for(int i = 0; i < 9;i+=3) {
+            Group newGroup = new Group();
+            ArrayList<Student> student = new ArrayList<Student>();
+            student.add(studentList.get(i));
+            student.add(studentList.get(i+1));
+            student.add(studentList.get(i+2));
+            newGroup.setStudentList(student);
+            newGroup.setGroupNum(count);
+            groups.add(newGroup);
+            count++;
+        }
+        return groups;
+    }
     public static void main(String args[]) throws IOException {
         grouping test = new grouping();
-        test.printStudents();
-        System.out.println(test.verifyData());
+      //  test.printStudents();
+       // System.out.println(test.verifyData());
+        ArrayList<Group> example = test.demoGroup();
+        test.printStudents(example);
     //      ArrayList<Preference> curPrefer = stu.getPrefer();
          //   for(Preference prefer: curPrefer) {
          //       System.out.println(prefer.getStudent());
