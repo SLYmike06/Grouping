@@ -44,16 +44,28 @@ public class grouping {
         }
     }
 
-    public int  scoring(Group group) {
+    public int scoring(Group group) {
         int groupScore = 0;
         for(int i = 0; i < group.studentList.size();i++) {
             Student curr = group.studentList.get(i);
-            if(curr.getPrefer().contains(curr)) {
-                groupScore +=10;
+            for(int j = 0; j < curr.getPrefer().size();j++) {
+                ArrayList<Preference> listOfPrefer = curr.getPrefer();
+                for(int k = 0; k < listOfPrefer.size();k++) {
+                    if(group.studentList.contains(listOfPrefer.get(i).getStudent())) {
+                        groupScore +=10;
+                    }
+                }
             }
         }
         return groupScore;
     }
+    //if the group contains any of the prefers
+//    public boolean contain(ArrayList<Preference> prefer, Group gp) {
+//        for(int i = 0; i < prefer.size();i++) {
+//            if(prefergp.studentList)
+//        }
+//        return false;
+//    }
     public boolean verifyData() {
         for(Student curStu: studentList) {
             ArrayList<Preference> curPrefer = curStu.getPrefer();
@@ -111,12 +123,15 @@ public class grouping {
         }
         return groups;
     }
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         grouping test = new grouping();
       //  test.printStudents();
        // System.out.println(test.verifyData());
         ArrayList<Group> example = test.demoGroup();
         test.printStudents(example);
+        for(int i = 0; i < example.size();i++) {
+            System.out.println( "Group " + (i+1) + " score: " + test.scoring(example.get(i)));
+        }
     //      ArrayList<Preference> curPrefer = stu.getPrefer();
          //   for(Preference prefer: curPrefer) {
          //       System.out.println(prefer.getStudent());
