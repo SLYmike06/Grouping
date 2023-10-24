@@ -48,12 +48,12 @@ public class grouping {
         int groupScore = 0;
         for(int i = 0; i < group.studentList.size();i++) {
             Student curr = group.studentList.get(i);
-            for(int j = 0; j < curr.getPrefer().size();j++) {
-                ArrayList<Preference> listOfPrefer = curr.getPrefer();
-                for(int k = 0; k < listOfPrefer.size();k++) {
-                    if(group.studentList.contains(listOfPrefer.get(i).getStudent())) {
-                        groupScore +=10;
-                    }
+            ArrayList<Preference> listOfPrefer = curr.getPrefer();
+            for(int k = 0; k < listOfPrefer.size();k++) {
+                Student potentialStudent = listOfPrefer.get(k).getStudent();
+                if(group.studentList.contains(potentialStudent) && k !=i) {
+                    groupScore += 10;
+                    break;
                 }
             }
         }
@@ -70,8 +70,7 @@ public class grouping {
         for(Student curStu: studentList) {
             ArrayList<Preference> curPrefer = curStu.getPrefer();
             for(int i = 0; i < curPrefer.size();i++) {
-                Preference prefer = curPrefer.get(i);
-                Student match = findMatch(prefer.name);
+                Student match = findMatch(curPrefer.get(i).name);
                 if(match == null) {
                     System.out.println("the Student named: " + prefer.name +  " is not a valid name");
                     return false;
@@ -125,8 +124,8 @@ public class grouping {
     }
     public static void main(String[] args) throws IOException {
         grouping test = new grouping();
-      //  test.printStudents();
-       // System.out.println(test.verifyData());
+        test.printStudents();
+        System.out.println(test.verifyData());
         ArrayList<Group> example = test.demoGroup();
         test.printStudents(example);
         for(int i = 0; i < example.size();i++) {
