@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Random;
+
 
 public class grouping {
     int num;
@@ -33,7 +35,7 @@ public class grouping {
                 Student newStudent = new Student(csvRecord.get(0));
                 ArrayList<Preference> newStudentPreference = new ArrayList<Preference>();
                 for (int i = 1; i < size; i += 2) {
-                    if(csvRecord.get(i).length() > 0 || csvRecord.get(i+1).length() > 0) {
+                    if (csvRecord.get(i).length() > 0 || csvRecord.get(i+1).length() > 0) {
                        // System.out.println(" desire: " + csvRecord.get(i));
                         newStudentPreference.add(new Preference(csvRecord.get(i).charAt(0),csvRecord.get(i+1)));
                     }
@@ -46,18 +48,30 @@ public class grouping {
 
     public int scoring(Group group) {
         int groupScore = 0;
-        for(int i = 0; i < group.studentList.size();i++) {
+        for (int i = 0; i < group.studentList.size();i++) {
             Student curr = group.studentList.get(i);
             ArrayList<Preference> listOfPrefer = curr.getPrefer();
-            for(int k = 0; k < listOfPrefer.size();k++) {
+            for (int k = 0; k < listOfPrefer.size();k++) {
                 Student potentialStudent = listOfPrefer.get(k).getStudent();
-                if(group.studentList.contains(potentialStudent) && k !=i) {
+                if (group.studentList.contains(potentialStudent) && k !=i) {
                     groupScore += 10;
                     break;
                 }
             }
         }
         return groupScore;
+    }
+
+    public Group randCluster() {
+        Group nwGroup = new Group();
+        ArrayList<Student> students = new ArrayList<Student>();
+        for(int i = 0; i < groupSize;i++) {
+            Random rand = new Random();
+            students.add(studentList.get(rand.nextInt(groupSize)));
+        }
+        nwGroup.setStudentList(students);
+        int score = scoring(nwGroup);
+        nwGroup.setScore(score);
     }
     //if the group contains any of the prefers
 //    public boolean contain(ArrayList<Preference> prefer, Group gp) {
@@ -67,11 +81,11 @@ public class grouping {
 //        return false;
 //    }
     public boolean verifyData() {
-        for(Student curStu: studentList) {
+        for (Student curStu: studentList) {
             ArrayList<Preference> curPrefer = curStu.getPrefer();
-            for(int i = 0; i < curPrefer.size();i++) {
+            for (int i = 0; i < curPrefer.size();i++) {
                 Student match = findMatch(curPrefer.get(i).name);
-                if(match == null) {
+                if (match == null) {
                     System.out.println("the Student named: " + prefer.name +  " is not a valid name");
                     return false;
                 } else {
@@ -88,20 +102,20 @@ public class grouping {
      * @return the matching student or null if not found
      */
     public Student findMatch(String name) {
-        for(Student stu: studentList) {
-            if(name.equals(stu.getName())) {
+        for (Student stu: studentList) {
+            if (name.equals(stu.getName())) {
                 return stu;
             }
         }
         return null;
     }
     public void printStudents(ArrayList<Group> groups) {
-        for(Group grp: groups) {
+        for (Group grp: groups) {
             System.out.println(grp);
         }
     }
     public void printStudents() {
-        for(Student curStu: studentList) {
+        for (Student curStu: studentList) {
             System.out.println(curStu);
         }
     }
@@ -109,7 +123,7 @@ public class grouping {
     public ArrayList<Group> demoGroup() {
         ArrayList<Group> groups = new ArrayList<Group>();
         int count = 1;
-        for(int i = 0; i < 9;i+=3) {
+        for (int i = 0; i < 9;i+=3) {
             Group newGroup = new Group();
             ArrayList<Student> student = new ArrayList<Student>();
             student.add(studentList.get(i));
