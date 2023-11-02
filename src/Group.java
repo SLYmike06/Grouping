@@ -23,6 +23,10 @@ public class Group {
         return groupNum;
     }
 
+    public ArrayList<Student> getStudentList() {
+        return studentList;
+    }
+
     public void setScore(int score) {
         this.score = score;
     }

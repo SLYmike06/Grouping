@@ -9,19 +9,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class grouping {
+public class Grouping {
     int num;
     int groupSize;
     Preference prefer;
     ArrayList<Student> studentList;
-    public grouping() throws IOException {
+    public Grouping() throws IOException {
         readFile();
     }
     public void readFile() throws IOException {
         Reader reader = Files.newBufferedReader(Paths.get("./Untitled spreadsheet - Sheet1 (4).csv"));
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
-        int num = 0;
-        int groupSize = 0;
         studentList = new ArrayList<Student>();
         for (CSVRecord csvRecord : csvParser) {
           //  System.out.println(csvRecord.getRecordNumber());
@@ -62,16 +60,28 @@ public class grouping {
         return groupScore;
     }
 
-    public Group randCluster() {
-        Group nwGroup = new Group();
-        ArrayList<Student> students = new ArrayList<Student>();
-        for(int i = 0; i < groupSize;i++) {
-            Random rand = new Random();
-            students.add(studentList.get(rand.nextInt(groupSize)));
+    public ArrayList<Group> randCluster() {
+        ArrayList<Group> randGroup = new ArrayList<Group>();
+        for(int i = 0; i < num/groupSize;i++) {
+            Group nwGroup = new Group();
+            ArrayList<Student> students = new ArrayList<Student>();
+            for(int j = 0; j < (groupSize);j++) {
+                Random rand = new Random();
+                Student possible = studentList.get(rand.nextInt(num));
+                int index = studentList.indexOf(possible);
+                while(possible.inGroup) {
+                    possible = studentList.get(rand.nextInt(num));
+                }
+                students.add(possible);
+                studentList.get(index).setInGroup(true);
+            }
+            Group.groupCount++;
+            nwGroup.setStudentList(students);
+            int score = scoring(nwGroup);
+            nwGroup.setScore(score);
+            randGroup.add(nwGroup);
         }
-        nwGroup.setStudentList(students);
-        int score = scoring(nwGroup);
-        nwGroup.setScore(score);
+        return randGroup;
     }
     //if the group contains any of the prefers
 //    public boolean contain(ArrayList<Preference> prefer, Group gp) {
@@ -137,14 +147,17 @@ public class grouping {
         return groups;
     }
     public static void main(String[] args) throws IOException {
-        grouping test = new grouping();
-        test.printStudents();
-        System.out.println(test.verifyData());
+        Grouping test = new Grouping();
+        //test.printStudents();
+        //System.out.println(test.verifyData());
         ArrayList<Group> example = test.demoGroup();
-        test.printStudents(example);
+       // test.printStudents(example);
         for(int i = 0; i < example.size();i++) {
-            System.out.println( "Group " + (i+1) + " score: " + test.scoring(example.get(i)));
+           // System.out.println( "Group " + (i+1) + " score: " + test.scoring(example.get(i)));
         }
+        ArrayList<Group> testGroupsList = test.randCluster();
+        test.printStudents(testGroupsList);
+        //test.printStudents();
     //      ArrayList<Preference> curPrefer = stu.getPrefer();
          //   for(Preference prefer: curPrefer) {
          //       System.out.println(prefer.getStudent());
