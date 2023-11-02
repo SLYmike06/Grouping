@@ -143,6 +143,7 @@ public class Grouping {
             newGroup.setGroupNum(count);
             groups.add(newGroup);
             count++;
+            System.out.println("test");
         }
         return groups;
     }
