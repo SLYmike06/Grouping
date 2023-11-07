@@ -8,7 +8,8 @@ public class Group {
     public Group() {
         studentList = new ArrayList<Student>();
         score = 0;
-        groupNum = 0;
+        groupCount++;
+        groupNum = groupCount;
     }
 
     public static int getGroupCount() {

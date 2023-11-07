@@ -62,18 +62,49 @@ public class Grouping {
 
     public ArrayList<Group> randCluster() {
         ArrayList<Group> randGroup = new ArrayList<Group>();
+        ArrayList<Student> copyList = new ArrayList<>(studentList);;
+        for(int i = 0; i < num/groupSize;i++) {
+            Group nwGroup = new Group();
+            ArrayList<Student> groupStudents = new ArrayList<>();
+            for(int j = 0; j < (groupSize);j++) {
+                Random rand = new Random();
+                rand.setSeed(123);
+                Student possible = copyList.get(rand.nextInt(copyList.size()));
+                //int index = studentList.indexOf(possible);
+               // while(possible.inGroup) {
+                 //   possible = studentList.get(rand.nextInt(num));
+               // }
+                groupStudents.add(possible);
+                copyList.remove(possible);
+                //studentList.get(index).setInGroup(true);
+            }
+            nwGroup.setStudentList(groupStudents);
+            int score = scoring(nwGroup);
+            nwGroup.setScore(score);
+            randGroup.add(nwGroup);
+        }
+        return randGroup;
+    }
+
+    public ArrayList<Group> PreferenceCluster() {
+        ArrayList<Group> randGroup = new ArrayList<Group>();
+        int currentTotal = num;
+        ArrayList<Student> copyList = studentList;
         for(int i = 0; i < num/groupSize;i++) {
             Group nwGroup = new Group();
             ArrayList<Student> students = new ArrayList<Student>();
             for(int j = 0; j < (groupSize);j++) {
                 Random rand = new Random();
-                Student possible = studentList.get(rand.nextInt(num));
-                int index = studentList.indexOf(possible);
-                while(possible.inGroup) {
-                    possible = studentList.get(rand.nextInt(num));
-                }
+                // rand.setSeed(123);
+                Student possible = studentList.get(rand.nextInt(currentTotal));
+                currentTotal--;
+                //int index = studentList.indexOf(possible);
+                // while(possible.inGroup) {
+                //   possible = studentList.get(rand.nextInt(num));
+                // }
                 students.add(possible);
-                studentList.get(index).setInGroup(true);
+                copyList.remove(possible);
+                //studentList.get(index).setInGroup(true);
             }
             Group.groupCount++;
             nwGroup.setStudentList(students);
@@ -83,6 +114,8 @@ public class Grouping {
         }
         return randGroup;
     }
+
+
     //if the group contains any of the prefers
 //    public boolean contain(ArrayList<Preference> prefer, Group gp) {
 //        for(int i = 0; i < prefer.size();i++) {
@@ -121,13 +154,17 @@ public class Grouping {
     }
     public void printStudents(ArrayList<Group> groups) {
         for (Group grp: groups) {
-            System.out.println(grp);
+            System.out.println(grp + "            Group Score: " + grp.getScore());
         }
     }
     public void printStudents() {
         for (Student curStu: studentList) {
             System.out.println(curStu);
         }
+    }
+
+    public ArrayList<Student> getStudentList() {
+        return studentList;
     }
 
     public ArrayList<Group> demoGroup() {
@@ -151,13 +188,16 @@ public class Grouping {
         Grouping test = new Grouping();
         //test.printStudents();
         //System.out.println(test.verifyData());
-        ArrayList<Group> example = test.demoGroup();
+        //ArrayList<Group> example = test.demoGroup();
        // test.printStudents(example);
-        for(int i = 0; i < example.size();i++) {
+        //for(int i = 0; i < example.size();i++) {
            // System.out.println( "Group " + (i+1) + " score: " + test.scoring(example.get(i)));
+        //}
+        for(int i = 0; i < 100;i++ ) {
+            ArrayList<Group> testGroupsList = test.randCluster();
+            test.printStudents(testGroupsList);
         }
-        ArrayList<Group> testGroupsList = test.randCluster();
-        test.printStudents(testGroupsList);
+
         //test.printStudents();
     //      ArrayList<Preference> curPrefer = stu.getPrefer();
          //   for(Preference prefer: curPrefer) {
