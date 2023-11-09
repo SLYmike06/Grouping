@@ -54,6 +54,7 @@ public class Grouping {
                 if (group.studentList.contains(potentialStudent) && k !=i) {
                     groupScore += 10;
                     break;
+                    int ct = 0;
                 }
             }
         }
