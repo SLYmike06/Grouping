@@ -1,11 +1,11 @@
 9,,,,,,
 3,,,,,,
-studentA,p,StudentI,p,studentB,p,studentB
+studentA,p,StudentI,p,studentC,p,studentB
 studentB,p,studentA,p,StudentF,p,studentC
 studentC,p,studentB,p,StudentG,p,StudentH
-studentD,p,studentC,p,studentC,p,StudentI
-StudentE,p,studentD,p,studentD,p,studentA
-StudentF,p,StudentE,p,StudentE,p,studentD
+studentD,p,StudentG,p,studentC,p,StudentI
+StudentE,p,studentB,p,studentD,p,studentA
+StudentF,p,StudentI,p,StudentE,p,studentD
 StudentG,p,StudentF,p,StudentH,p,StudentE
 StudentH,p,StudentG,p,StudentI,p,StudentF
-StudentI,p,StudentH,p,studentA,p,StudentH
+StudentI,p,StudentH,p,studentA,p,studentD

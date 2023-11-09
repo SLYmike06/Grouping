@@ -1,12 +1,12 @@
 import java.util.ArrayList;
 
 public class Group {
-    ArrayList<Student> studentList;
+    ArrayList<Student> stuList;
     int score;
     int groupNum;
     static int groupCount = 0;
     public Group() {
-        studentList = new ArrayList<Student>();
+        stuList = new ArrayList<Student>();
         score = 0;
         groupCount++;
         groupNum = groupCount;
@@ -25,7 +25,7 @@ public class Group {
     }
 
     public ArrayList<Student> getStudentList() {
-        return studentList;
+        return stuList;
     }
 
     public void setScore(int score) {
@@ -37,12 +37,12 @@ public class Group {
     }
 
     public void setStudentList(ArrayList<Student> studentList) {
-        this.studentList = studentList;
+        this.stuList = studentList;
     }
 
     public String toString() {
         String output = "Group Number: " + groupNum;
-        for (Student student: studentList ) {
+        for (Student student: stuList ) {
             output += " Student: " + student.getName();
         }
         return output;

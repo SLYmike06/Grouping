@@ -27,6 +27,10 @@ public class Student {
         this.inGroup = inGroup;
     }
 
+    public boolean equStu(Student stu) {
+        return this.name.equals(stu.name);
+    }
+
     public String toString() {
         String output = "name: " + name;
         for (Preference curPreference: prefer ) {
