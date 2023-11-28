@@ -14,52 +14,9 @@ import java.util.Random;
 public class Grouping {
     public static void main(String[] args) throws IOException {
         Grouping test = new Grouping();
-        //test.printStudents();
-        test.verifyData();
-        //ArrayList<Group> example = test.demoGroup();
-        // test.printStudents(example);
-        //for(int i = 0; i < example.size();i++) {
-        // System.out.println( "Group " + (i+1) + " score: " + test.scoring(example.get(i)));
-        //}
-        ArrayList<Configuration> listConfig = new ArrayList<>();
-        for(int i = 0; i < 10000;i++ ) {
-            ArrayList<Group> testGroupsList = test.randCluster();
-            Configuration config = new Configuration();
-            config.setConfigScore(test.configurationScore(testGroupsList));
-            ArrayList<Integer>scores = new ArrayList<Integer>();
-            for(int j = 0; j < testGroupsList.size();j++) {
-                scores.add(testGroupsList.get(j).getScore());
-            }
-            config.setScores(scores);
-            StandardDeviation sd = new StandardDeviation(scores);
-            config.setAllGP(testGroupsList);
-            config.setSD(sd.SD());
-            listConfig.add(config);
-           // test.printStudents(testGroupsList);
-          //  System.out.println("Configuration Score: " + config.getConfigScore());
-          //  System.out.println("SD value: " + config.getSD());
-          //  System.out.println("----------------------------------------------------------------------------------------------------------------");
-        }
+        ArrayList<Configuration> listConfig = test.generateNConfig(1000000);
         Configuration con = test.pickTopConfigs(listConfig);
-        System.out.println(con.getConfigScore());
-
-        // ArrayList<Group> testGroupsList = test.randCluster();
-    // test.printStudents(testGroupsList);
-     //   Group np = new Group();
-     //   ArrayList<Student> testStu = new ArrayList<Student>();
-      //  testStu.add(test.studentList.get(0));
-      //  testStu.add(test.studentList.get(1));
-      //  testStu.add(test.studentList.get(2));
-      //  np.setStudentList(testStu);
-      //  System.out.println(test.scoring(np));
-
-
-        //test.printStudents();
-    //      ArrayList<Preference> curPrefer = stu.getPrefer();
-    //   for(Preference prefer: curPrefer) {
-    //       System.out.println(prefer.getStudent());
-    //  }
-    //}
+        test.printConfigInfo(con);
 }
     int num;
     int groupSize;
@@ -68,6 +25,7 @@ public class Grouping {
 
     public Grouping() throws IOException {
         readFile();
+        verifyData();
     }
 
     public void readFile() throws IOException {
@@ -75,14 +33,12 @@ public class Grouping {
         CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
         studentList = new ArrayList<Student>();
         for (CSVRecord csvRecord : csvParser) {
-            //  System.out.println(csvRecord.getRecordNumber());
             if (csvRecord.getRecordNumber() == 1) {
                 num = Integer.parseInt(csvRecord.get(0));
             } else if (csvRecord.getRecordNumber() == 2) {
                 groupSize = Integer.parseInt(csvRecord.get(0));
             } else {
                 int size = csvRecord.size();
-                // System.out.println(size);
                 Student newStudent = new Student(csvRecord.get(0));
                 ArrayList<Preference> newStudentPreference = new ArrayList<Preference>();
                 for (int i = 1; i < size; i += 2) {
@@ -96,11 +52,24 @@ public class Grouping {
             }
         }
     }
+
     public Configuration pickTopConfigs(ArrayList<Configuration> list) {
        // ArrayList<Configuration> topConfigs = new ArrayList<>();
         PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
             public int compare(Configuration s1, Configuration s2) {
-                return Integer.compare(s2.getConfigScore(), s1.getConfigScore());
+                if(s1.getConfigScore() > s2.getConfigScore()) {
+                    return -1;
+                } else if(s1.getConfigScore() < s2.getConfigScore()) {
+                    return 1;
+                } else {
+                    if(s1.getSD() > s2.getSD()) {
+                        return 1;
+                    } else if(s1.getSD() < s2.getSD()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
             }
         });
         pq.addAll(list);
@@ -109,6 +78,12 @@ public class Grouping {
           //  pq.remove();
         // }
         return pq.peek();
+    }
+    public void printConfigInfo(Configuration con) {
+        System.out.println("The score for the best configuration is: " + con.getConfigScore());
+        System.out.println("The groups in this configuration are the following:");
+        System.out.println("Standard Deviation for this configuration: " + con.getSD());
+        printStudents(con.getAllGP());
     }
 
     public int scoring(Group group) {
@@ -135,6 +110,26 @@ public class Grouping {
         return groupScore;
     }
 
+    public ArrayList<Configuration> generateNConfig(int n) {
+        ArrayList<Configuration> listConfig = new ArrayList<>();
+        for(int i = 0; i < n;i++ ) {
+            ArrayList<Group> testGroupsList = randCluster();
+            Configuration config = new Configuration();
+            config.setConfigScore(configurationScore(testGroupsList));
+            ArrayList<Integer>scores = new ArrayList<Integer>();
+            for(int j = 0; j < testGroupsList.size();j++) {
+                scores.add(testGroupsList.get(j).getScore());
+            }
+            config.setScores(scores);
+            StandardDeviation sd = new StandardDeviation(scores);
+            config.setAllGP(testGroupsList);
+            config.setSD(sd.SD());
+            listConfig.add(config);
+        }
+
+        return listConfig;
+    }
+
     public int configurationScore(ArrayList<Group>groups) {
         int totalScore = 0;
         for(int i = 0; i < groups.size();i++) {
@@ -152,13 +147,8 @@ public class Grouping {
             for (int j = 0; j < (groupSize); j++) {
                 Random rand = new Random();
                 Student possible = copyList.get(rand.nextInt(copyList.size()));
-                //int index = studentList.indexOf(possible);
-                // while(possible.inGroup) {
-                //   possible = studentList.get(rand.nextInt(num));
-                // }
                 groupStudents.add(possible);
                 copyList.remove(possible);
-                //studentList.get(index).setInGroup(true);
             }
             nwGroup.setStudentList(groupStudents);
             int score = scoring(nwGroup);
@@ -187,7 +177,7 @@ public class Grouping {
         return nConfigs;
     }
 
-    public ArrayList<Group> PreferenceCluster() {
+    public ArrayList<Group> geneticCluster() {
         ArrayList<Group> randGroup = new ArrayList<Group>();
         return randGroup;
     }
@@ -206,14 +196,13 @@ public class Grouping {
             for (int i = 0; i < curStuPrefer.size(); i++) {
                 Student match = findMatch(curStuPrefer.get(i).name);
                 if (match == null) {
-                    System.out.println("the Student named: " + prefer.name + " is not a valid name");
+                    System.out.println("the Student named: " + curStuPrefer.get(i).name + " is not a valid name for " + studentList.get(j).getName());
                     return false;
                 } else {
                     curStuPrefer.get(i).setStudent(match);
                 }
             }
         }
-        // studentList = studentList;
         return true;
     }
 
