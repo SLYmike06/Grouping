@@ -1,33 +1,74 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Configuration {
     int configScore = 0;
-    ArrayList<Integer> scores;
-    ArrayList<Group> allGP;
-    double SD;
 
-    public Configuration(int configScore, ArrayList<Group> allGP, ArrayList<Integer> scores, double SD) {
+    int numNoPrefer;
+    ArrayList<Integer> scores;
+    ArrayList<Student> studentList;
+    int groupSize;
+    ArrayList<Group> groupList;
+    double sd;
+
+    public Configuration(int configScore, ArrayList<Group> groupList, ArrayList<Integer> scores, double sd, ArrayList<Student> studentList, int groupSize) {
         this.configScore = configScore;
-        this.allGP = allGP;
+        this.groupList = groupList;
         this.scores = scores;
-        this.SD = SD;
+        this.sd = sd;
+        numNoPrefer = 0;
+        this.studentList = studentList;
+        this.groupSize = groupSize;
     }
 
     public Configuration() {
         configScore = 0;
-        allGP = new ArrayList<Group>();
+        numNoPrefer = 0;
+        groupList = new ArrayList<Group>();
     }
+
+    public void generateRandomGroups() {
+        ArrayList<Student> copyList = new ArrayList<>(studentList);
+        for (int i = 0; i < studentList.size() / groupSize; i++) {
+            Group nwGroup = new Group();
+            ArrayList<Student> groupStudents = new ArrayList<>();
+            for (int j = 0; j < (groupSize); j++) {
+                Random rand = new Random();
+                Student possible = copyList.get(rand.nextInt(copyList.size()));
+                groupStudents.add(possible);
+                copyList.remove(possible);
+            }
+            nwGroup.setStudentList(groupStudents);
+            nwGroup.score();
+            groupList.add(nwGroup);
+        }
+    }
+
+    public void score() {
+        configScore = 0;
+        for(int i = 0; i < groupList.size();i++) {
+            configScore += groupList.get(i).getScore();
+        }
+        double mean = (double) configScore / groupList.size();
+        double numeratorSum = 0.0;
+            for (int j = 0; j < groupList.size(); j++) {
+                numeratorSum = numeratorSum + Math.pow((scores.get(j) - mean), 2);
+            }
+            sd = Math.sqrt(numeratorSum / groupList.size());
+    }
+
+
 
     public int getConfigScore() {
         return configScore;
     }
 
     public double getSD() {
-        return SD;
+        return sd;
     }
 
     public ArrayList<Group> getAllGP() {
-        return allGP;
+        return groupList;
     }
 
     public ArrayList<Integer> getScores() {
