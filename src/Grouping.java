@@ -5,25 +5,25 @@ import org.apache.commons.csv.CSVFormat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Random;
+import java.util.*;
 
 
 public class Grouping {
     public static void main(String[] args) throws IOException {
         Grouping test = new Grouping();
-        ArrayList<Configuration> configList = test.generateNConfig(10000);
-        Configuration con = test.pickTopConfigs(configList);
+        test.generateNConfig(10000);
+        Configuration con = test.pickTopConfigs();
         test.printConfigInfo(con);
     }
     private int num;
     private int groupSize;
     private ArrayList<Student> studentList;
 
-    public Grouping() throws IOException {
+    private ArrayList<Configuration> configs;
+
+    public Grouping() {
         studentList = new ArrayList<>();
+        configs = new ArrayList<>();
         num = 0;
         groupSize = 0;
         readFile();
@@ -74,8 +74,39 @@ public class Grouping {
         return true;
     }
 
-    public Configuration pickTopConfigs(ArrayList<Configuration> list) {
-        PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
+    public Configuration pickTopConfigs() {
+        return configs.get(0);
+    }
+    public void printConfigInfo(Configuration con) {
+        System.out.println("The score for the best configuration is: " + con.getConfigScore());
+        System.out.println("The groups in this configuration are the following:");
+        System.out.println("Standard Deviation for this configuration: " + con.getSD());
+        printStudents(con.getAllGP());
+    }
+
+
+
+    public void generateNConfig(int n) {
+        ArrayList<Configuration> listConfig = new ArrayList<>();
+        for(int i = 0; i < n;i++ ) {
+            Configuration config = new Configuration(studentList, groupSize);
+            config.generateRandomGroups();
+            ArrayList<Group> testGroupsList = config.getAllGP();
+            config.score();
+            config.setConfigScore(config.getConfigScore());
+            ArrayList<Integer>scores = new ArrayList<Integer>();
+            for(int j = 0; j < testGroupsList.size();j++) {
+                scores.add(testGroupsList.get(j).getScore());
+            }
+            config.setScores(scores);
+            StandardDeviation sd = new StandardDeviation(scores);
+            config.setAllGP(testGroupsList);
+            config.setSD(sd.SD());
+            listConfig.add(config);
+            System.out.println(config.getConfigScore() + "," + config.getSD());
+        }
+        class CustomComparator implements Comparator<Configuration> {
+            @Override
             public int compare(Configuration s1, Configuration s2) {
                 if(s1.getConfigScore() > s2.getConfigScore()) {
                     return -1;
@@ -91,38 +122,9 @@ public class Grouping {
                     }
                 }
             }
-        });
-        pq.addAll(list);
-        return pq.peek();
-    }
-    public void printConfigInfo(Configuration con) {
-        System.out.println("The score for the best configuration is: " + con.getConfigScore());
-        System.out.println("The groups in this configuration are the following:");
-        System.out.println("Standard Deviation for this configuration: " + con.getSD());
-        printStudents(con.getAllGP());
-    }
-
-
-
-    public ArrayList<Configuration> generateNConfig(int n) {
-        ArrayList<Configuration> listConfig = new ArrayList<>();
-        for(int i = 0; i < n;i++ ) {
-            ArrayList<Group> testGroupsList = randCluster();
-            Configuration config = new Configuration();
-            config.setConfigScore(configurationScore(testGroupsList));
-            ArrayList<Integer>scores = new ArrayList<Integer>();
-            for(int j = 0; j < testGroupsList.size();j++) {
-                scores.add(testGroupsList.get(j).getScore());
-            }
-            config.setScores(scores);
-            StandardDeviation sd = new StandardDeviation(scores);
-            config.setAllGP(testGroupsList);
-            config.setSD(sd.SD());
-            listConfig.add(config);
-            System.out.println(config.getConfigScore() + "," + config.getSD());
         }
-
-        return listConfig;
+        listConfig.sort(new CustomComparator());
+        configs = listConfig;
     }
 
 
@@ -152,17 +154,6 @@ public class Grouping {
             System.out.println(grp + "            Group Score: " + grp.getScore());
         }
     }
-
-    public void printStudents() {
-        for (Student curStu : studentList) {
-            System.out.println(curStu);
-        }
-    }
-
-    public ArrayList<Student> getStudentList() {
-        return studentList;
-    }
-
     public ArrayList<Group> demoGroup() {
         ArrayList<Group> groups = new ArrayList<Group>();
         int count = 1;

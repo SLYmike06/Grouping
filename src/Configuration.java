@@ -21,10 +21,14 @@ public class Configuration {
         this.groupSize = groupSize;
     }
 
-    public Configuration() {
+    public Configuration(ArrayList<Student> studentList, int groupSize) {
         configScore = 0;
         numNoPrefer = 0;
         groupList = new ArrayList<Group>();
+        this.studentList = studentList;
+        this.groupSize = groupSize;
+        scores = new ArrayList<>();
+
     }
 
     public void generateRandomGroups() {
@@ -40,8 +44,12 @@ public class Configuration {
             }
             nwGroup.setStudentList(groupStudents);
             nwGroup.score();
+            int test = nwGroup.getScore();
+            scores.add(nwGroup.getScore());
             groupList.add(nwGroup);
         }
+
+
     }
 
     public void score() {
@@ -80,7 +88,7 @@ public class Configuration {
     }
 
     public void setAllGP(ArrayList<Group> allGP) {
-        this.allGP = allGP;
+        this.groupList = allGP;
     }
 
     public void setScores(ArrayList<Integer> scores) {
@@ -88,6 +96,6 @@ public class Configuration {
     }
 
     public void setSD(double SD) {
-        this.SD = SD;
+        this.sd = SD;
     }
 }
