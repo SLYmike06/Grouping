@@ -11,7 +11,7 @@ import java.util.*;
 public class Grouping {
     public static void main(String[] args) throws IOException {
         Grouping test = new Grouping();
-        test.generateNConfig(10000);
+        test.generateNConfig(100000);
         Configuration con = test.pickTopConfigs();
         test.printConfigInfo(con);
     }
@@ -125,14 +125,6 @@ public class Grouping {
         }
         listConfig.sort(new CustomComparator());
         configs = listConfig;
-    }
-
-
-
-
-    public ArrayList<Group> geneticCluster() {
-        ArrayList<Group> randGroup = new ArrayList<Group>();
-        return randGroup;
     }
     /**
      * searches for student that matches the name
