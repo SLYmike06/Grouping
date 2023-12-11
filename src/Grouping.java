@@ -11,7 +11,7 @@ import java.util.*;
 public class Grouping {
     public static void main(String[] args) throws IOException {
         Grouping test = new Grouping();
-        test.generateNConfig(100000);
+        test.generateNConfig(1000000);
         Configuration con = test.pickTopConfigs();
         test.printConfigInfo(con);
     }
@@ -32,7 +32,7 @@ public class Grouping {
 
     public void readFile() {
         try {
-            Reader reader = Files.newBufferedReader(Paths.get("./Untitled spreadsheet - Sheet1 (4).csv"));
+            Reader reader = Files.newBufferedReader(Paths.get("./realDATA.csv"));
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
             for (CSVRecord csvRecord : csvParser) {
                 if (csvRecord.getRecordNumber() == 1) {

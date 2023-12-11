@@ -33,7 +33,25 @@ public class Configuration {
 
     public void generateRandomGroups() {
         ArrayList<Student> copyList = new ArrayList<>(studentList);
-        for (int i = 0; i < studentList.size() / groupSize; i++) {
+        int groupplus = studentList.size() % groupSize;
+        int count = 0;
+        for (int i = 0; i < groupplus; i++) {
+            Group nwGroup = new Group();
+            ArrayList<Student> groupStudents = new ArrayList<>();
+            for (int j = 0; j < (groupSize+1); j++) {
+                count++;
+                Random rand = new Random();
+                Student possible = copyList.get(rand.nextInt(copyList.size()));
+                groupStudents.add(possible);
+                copyList.remove(possible);
+            }
+            nwGroup.setStudentList(groupStudents);
+            nwGroup.score();
+            scores.add(nwGroup.getScore());
+            groupList.add(nwGroup);
+        }
+        int normalGroup = (studentList.size() - count) / groupSize;
+        for (int i = 0; i < normalGroup; i++) {
             Group nwGroup = new Group();
             ArrayList<Student> groupStudents = new ArrayList<>();
             for (int j = 0; j < (groupSize); j++) {
@@ -44,7 +62,6 @@ public class Configuration {
             }
             nwGroup.setStudentList(groupStudents);
             nwGroup.score();
-            int test = nwGroup.getScore();
             scores.add(nwGroup.getScore());
             groupList.add(nwGroup);
         }
