@@ -6,14 +6,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class Grouping {
     public static void main(String[] args) throws IOException {
+        double start = System.nanoTime() / Math.pow(10,9);
         Grouping test = new Grouping();
-        test.generateNConfig(1000000);
+        test.generateNConfig(100000000);
         Configuration con = test.pickTopConfigs();
         test.printConfigInfo(con);
+        double end = System.nanoTime() / Math.pow(10,9);
+        System.out.println(end - start);
+
+
     }
     private int num;
     private int groupSize;
@@ -87,7 +93,24 @@ public class Grouping {
 
 
     public void generateNConfig(int n) {
-        ArrayList<Configuration> listConfig = new ArrayList<>();
+        PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
+            public int compare(Configuration s1, Configuration s2) {
+                if(s1.getConfigScore() < s2.getConfigScore()) {
+                    return -1;
+                } else if(s1.getConfigScore() > s2.getConfigScore()) {
+                    return 1;
+                } else {
+                    if(s1.getSD() < s2.getSD()) {
+                        return 1;
+                    } else if(s1.getSD() > s2.getSD()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+        });
+         //   ArrayList<Configuration> listConfig = new ArrayList<>();
         for(int i = 0; i < n;i++ ) {
             Configuration config = new Configuration(studentList, groupSize);
             config.generateRandomGroups();
@@ -102,8 +125,11 @@ public class Grouping {
             StandardDeviation sd = new StandardDeviation(scores);
             config.setAllGP(testGroupsList);
             config.setSD(sd.SD());
-            listConfig.add(config);
-            System.out.println(config.getConfigScore() + "," + config.getSD());
+            pq.add(config);
+            if(pq.size() > 100) {
+                pq.poll();
+            }
+           // System.out.println(config.getConfigScore() + "," + config.getSD());
         }
         class CustomComparator implements Comparator<Configuration> {
             @Override
@@ -123,6 +149,7 @@ public class Grouping {
                 }
             }
         }
+        ArrayList<Configuration> listConfig = new ArrayList<Configuration>(pq);
         listConfig.sort(new CustomComparator());
         configs = listConfig;
     }
