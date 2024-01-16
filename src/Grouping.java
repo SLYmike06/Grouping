@@ -90,6 +90,25 @@ public class Grouping {
         printStudents(con.getAllGP());
     }
 
+    private  ArrayList<Configuration> generateAllCombinations(Configuration currentconfig, ArrayList<Configuration> result) {
+        if(isConfigFilled(currentconfig)) {
+            result.add(currentconfig);
+            return result;
+        }
+        for(int i = 0; i < studentList.size();i++) {
+
+        }
+
+
+    }
+
+    private boolean isConfigFilled(Configuration config) {
+
+        for(int i = 0; i < config.groupList.size();i++) {
+            for(int i  = 0; i < 0; i)
+        }
+    }
+
 
 
     public void generateNConfig(int n) {
