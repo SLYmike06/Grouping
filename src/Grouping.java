@@ -90,24 +90,38 @@ public class Grouping {
         printStudents(con.getAllGP());
     }
 
-    private  ArrayList<Configuration> generateAllCombinations(Configuration currentconfig, ArrayList<Configuration> result) {
-        if(isConfigFilled(currentconfig)) {
-            result.add(currentconfig);
+    private  ArrayList<Configuration> generateAllCombinations(Group people, Configuration currentCombination, ArrayList<Configuration> result) {
+        if (allGroupsFilled(currentCombination)) {
+            result.add(currentCombination);
             return result;
         }
-        for(int i = 0; i < studentList.size();i++) {
+        for (int i = 0; i < studentList.size(); i++) {
+            Group newGroup = new Group();
+            if (!currentCombination.groupList.isEmpty() && currentCombination.groupList.get(currentCombination.groupList.size() - 1).stuList.size() < people.stuList.size() / totalGroups) {
+                newGroup = new Group(currentCombination.groupList.get(currentCombination.groupSize - 1).getStudentList());
+                currentCombination.groupList.remove(currentCombination.groupSize - 1);
+            }
+            newGroup.stuList.add(people.stuList.get(i));
+            currentCombination.groupList.add(newGroup);
+            generateCombinations(new Group(new ArrayList<>(people.stuList.subList(i + 1, people.stuList.size())), currentCombination, result);
+            currentCombination.groupList.remove(currentCombination.groupSize - 1);
+        }
 
+        return result;
+    }
+
+        private static boolean allGroupsFilled(Configuration combination) {
+            for () {
+                if (group.size() != combination.get(0).size()) {
+                    return false;
+                }
+            }
+            return true;
         }
 
 
     }
 
-    private boolean isConfigFilled(Configuration config) {
-
-        for(int i = 0; i < config.groupList.size();i++) {
-            for(int i  = 0; i < 0; i)
-        }
-    }
 
 
 

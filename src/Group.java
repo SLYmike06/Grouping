@@ -14,6 +14,14 @@ public class Group {
         groupNum = groupCount;
     }
 
+    public Group(ArrayList<Student> list) {
+        stuList = list;
+        score = 0;
+        noPrefer = 0;
+        groupCount++;
+        groupNum = groupCount;
+    }
+
     public void score() {
         for (int i = 0; i < stuList.size(); i++) {
             Student curr = stuList.get(i);
