@@ -101,6 +101,7 @@ public class Grouping {
                 newGroup = new Group(currentCombination.groupList.get(currentCombination.groupSize - 1).getStudentList());
                 currentCombination.groupList.remove(currentCombination.groupSize - 1);
             }
+            //yres
             newGroup.stuList.add(people.stuList.get(i));
             currentCombination.groupList.add(newGroup);
             generateCombinations(new Group(new ArrayList<>(people.stuList.subList(i + 1, people.stuList.size())), currentCombination, result);
