@@ -9,6 +9,7 @@ public class Configuration {
     ArrayList<Student> studentList;
     int groupSize;
     ArrayList<Group> groupList;
+    ArrayList<String> index;
     double sd;
 
     public Configuration(int configScore, ArrayList<Group> groupList, ArrayList<Integer> scores, double sd, ArrayList<Student> studentList, int groupSize) {
@@ -25,6 +26,7 @@ public class Configuration {
         configScore = 0;
         numNoPrefer = 0;
         groupList = new ArrayList<Group>();
+        index = new ArrayList<String>();
         this.studentList = studentList;
         this.groupSize = groupSize;
         scores = new ArrayList<>();
@@ -67,6 +69,12 @@ public class Configuration {
         }
 
 
+    }
+
+    public void generateSpecificGroup() {
+       for(int i = 0; i < index.size();i++) {
+
+       }
     }
 
     public void score() {

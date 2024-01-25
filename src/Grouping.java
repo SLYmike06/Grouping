@@ -5,27 +5,32 @@ import org.apache.commons.csv.CSVFormat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Array;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
 public class Grouping {
     public static void main(String[] args) throws IOException {
-        double start = System.nanoTime() / Math.pow(10,9);
+       // double start = System.nanoTime() / Math.pow(10,9);
         Grouping test = new Grouping();
-        test.generateNConfig(100000000);
-        Configuration con = test.pickTopConfigs();
-        test.printConfigInfo(con);
-        double end = System.nanoTime() / Math.pow(10,9);
-        System.out.println(end - start);
-
-
+       // test.generateNConfig(100000000);
+      //  Configuration con = test.pickTopConfigs();
+      //  test.printConfigInfo(con);
+       // double end = System.nanoTime() / Math.pow(10,9);
+       // System.out.println(end - start);
+        test.inputConfigIndex(10,3);
+      //  test.generateAllCombinations(new int[]{1, 2, 3, 1, 2, 1, 2},7,0,"",0);
+        for(Integer i: test.configIndex) {
+            System.out.println(i);
+        }
     }
     private int num;
     private int groupSize;
     private ArrayList<Student> studentList;
 
     private ArrayList<Configuration> configs;
+    private int[] configIndex;
 
     public Grouping() {
         studentList = new ArrayList<>();
@@ -34,6 +39,11 @@ public class Grouping {
         groupSize = 0;
         readFile();
         verifyData();
+        configIndex = new int[num-10];
+    }
+
+    public int getGroupSize() {
+        return groupSize;
     }
 
     public void readFile() {
@@ -90,42 +100,65 @@ public class Grouping {
         printStudents(con.getAllGP());
     }
 
-    private  ArrayList<Configuration> generateAllCombinations(Group people, Configuration currentCombination, ArrayList<Configuration> result) {
-        if (allGroupsFilled(currentCombination)) {
-            result.add(currentCombination);
-            return result;
-        }
-        for (int i = 0; i < studentList.size(); i++) {
-            Group newGroup = new Group();
-            if (!currentCombination.groupList.isEmpty() && currentCombination.groupList.get(currentCombination.groupList.size() - 1).stuList.size() < people.stuList.size() / totalGroups) {
-                newGroup = new Group(currentCombination.groupList.get(currentCombination.groupSize - 1).getStudentList());
-                currentCombination.groupList.remove(currentCombination.groupSize - 1);
-            }
-            //yres
-            newGroup.stuList.add(people.stuList.get(i));
-            currentCombination.groupList.add(newGroup);
-            generateCombinations(new Group(new ArrayList<>(people.stuList.subList(i + 1, people.stuList.size())), currentCombination, result);
-            currentCombination.groupList.remove(currentCombination.groupSize - 1);
-        }
-
-        return result;
+    public void generateAllCombinations(int[] lookup, int totalElem, int currIndex,String total, int lastElem) {
+        if(currIndex == totalElem) {
+            //configIndex.add(total);
+        } else if(lookup[currIndex] == 1) {
+           int i = 1;
+           while(total.contains("" + i)) {
+               i++;
+           }
+           generateAllCombinations(lookup, totalElem,currIndex+ 1,total+i,i);
+       } else {
+           for(int i = lastElem+1; i <= totalElem;i++) {
+               if(!total.contains("" +i)) {
+                   generateAllCombinations(lookup,totalElem,currIndex+ 1,total+i,i);
+               }
+           }
+       }
     }
 
-        private static boolean allGroupsFilled(Configuration combination) {
-            for () {
-                if (group.size() != combination.get(0).size()) {
-                    return false;
-                }
-            }
-            return true;
+    public void inputConfigIndex(int totalStudent, int groupSize) {
+        int groupplus = totalStudent % groupSize;
+        int[] normal = new int[groupSize];
+        int[] normalplus = new int[groupSize+1];
+        for(int i = 1; i <= normal.length;i++) {
+            normal[i] = i;
         }
-
-
+        for(int i = 1; i <= normalplus.length;i++) {
+            normalplus[i] = i;
+        }
+        int count = 0;
+        int i = 0;
+        int j = 0;
+        for (; i < groupplus; i++) {
+            for(; j <= groupSize;j++) {
+                configIndex[j] = j+1;
+                i++;
+                count++;
+            }
+        }
+        int normalGroup = (totalStudent - count) / groupSize;
+        configIndex[i] = 9;
+        for (int k = 0; k < normalGroup; k++) {
+            for(int l = i; l <= groupSize;l++) {
+                configIndex[j] = j;
+            }
+        }
     }
 
 
 
 
+
+
+    public void printConfigList(ArrayList<Configuration> listOfConfig) {
+        for(Configuration config: listOfConfig) {
+            System.out.println(config);
+        }
+
+
+    }
     public void generateNConfig(int n) {
         PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
             public int compare(Configuration s1, Configuration s2) {
