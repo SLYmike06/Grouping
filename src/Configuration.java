@@ -71,9 +71,17 @@ public class Configuration {
 
     }
 
-    public void generateSpecificGroup() {
-       for(int i = 0; i < index.size();i++) {
-
+    public void generateSpecificGroup(int[] index, int[] template) {
+       for(int i = 0; i < index.length;i++) {
+           Group nwGroup = new Group();
+           ArrayList<Student> groupStudents = new ArrayList<>();
+           for (int j = 0; j < (groupSize+1); j++) {
+               groupStudents.add(studentList.get(index[0]));
+           }
+           nwGroup.setStudentList(groupStudents);
+           nwGroup.score();
+           scores.add(nwGroup.getScore());
+           groupList.add(nwGroup);
        }
     }
 

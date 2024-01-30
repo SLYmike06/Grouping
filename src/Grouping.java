@@ -20,9 +20,10 @@ public class Grouping {
        // double end = System.nanoTime() / Math.pow(10,9);
        // System.out.println(end - start);
         test.inputConfigIndex(10,3);
-      //  test.generateAllCombinations(new int[]{1, 2, 3, 1, 2, 1, 2},7,0,"",0);
-        for(Integer i: test.configIndex) {
-            System.out.println(i);
+        int[] arr = new int[10];
+        test.generateAllCombinations(test.configIndex,10,0,arr,0);
+        for(int[] d: test.indexs) {
+            System.out.println(Arrays.toString(d));
         }
     }
     private int num;
@@ -32,9 +33,13 @@ public class Grouping {
     private ArrayList<Configuration> configs;
     private int[] configIndex;
 
+    private ArrayList<int[]> indexs;
+
+
     public Grouping() {
         studentList = new ArrayList<>();
         configs = new ArrayList<>();
+        indexs = new ArrayList<>();
         num = 0;
         groupSize = 0;
         readFile();
@@ -100,58 +105,72 @@ public class Grouping {
         printStudents(con.getAllGP());
     }
 
-    public void generateAllCombinations(int[] lookup, int totalElem, int currIndex,String total, int lastElem) {
+    public ArrayList<Configuration> generateConfigs() {
+        ArrayList<Configuration> allCon = new ArrayList<>();
+        for(int i = 0; i < indexs.size();i++ ) {
+            Configuration config = new Configuration(studentList, groupSize);
+            config.generateSpecificGroup(indexs.get(i),configIndex);
+            ArrayList<Group> testGroupsList = config.getAllGP();
+            config.score();
+            config.setConfigScore(config.getConfigScore());
+            ArrayList<Integer>scores = new ArrayList<Integer>();
+            for(int j = 0; j < testGroupsList.size();j++) {
+                scores.add(testGroupsList.get(j).getScore());
+            }
+            config.setScores(scores);
+            StandardDeviation sd = new StandardDeviation(scores);
+            config.setAllGP(testGroupsList);
+            config.setSD(sd.SD());
+            allCon.add(config);
+        }
+        return allCon;
+    }
+
+    public void generateAllCombinations(int[] lookup, int totalElem, int currIndex,int[] total, int lastElem) {
+        int[] copy = Arrays.copyOf(total,total.length);
         if(currIndex == totalElem) {
-            //configIndex.add(total);
+            indexs.add(copy);
         } else if(lookup[currIndex] == 1) {
            int i = 1;
-           while(total.contains("" + i)) {
+           while(contain(total, i)) {
                i++;
            }
-           generateAllCombinations(lookup, totalElem,currIndex+ 1,total+i,i);
+           copy[currIndex] = i;
+           generateAllCombinations(lookup, totalElem,currIndex+ 1,copy,i);
        } else {
            for(int i = lastElem+1; i <= totalElem;i++) {
-               if(!total.contains("" +i)) {
-                   generateAllCombinations(lookup,totalElem,currIndex+ 1,total+i,i);
+               if(!contain(total,i)) {
+                   copy[currIndex] = i;
+                   generateAllCombinations(lookup,totalElem,currIndex+ 1,copy,i);
                }
            }
        }
     }
 
+    private boolean contain(int[] total, int num) {
+        for (int j : total) {
+            if (j == num) return true;
+        }
+        return false;
+    }
     public void inputConfigIndex(int totalStudent, int groupSize) {
         int groupplus = totalStudent % groupSize;
-        int[] normal = new int[groupSize];
-        int[] normalplus = new int[groupSize+1];
-        for(int i = 1; i <= normal.length;i++) {
-            normal[i] = i;
-        }
-        for(int i = 1; i <= normalplus.length;i++) {
-            normalplus[i] = i;
-        }
-        int count = 0;
-        int i = 0;
-        int j = 0;
-        for (; i < groupplus; i++) {
-            for(; j <= groupSize;j++) {
-                configIndex[j] = j+1;
-                i++;
-                count++;
+        int count = groupplus * groupSize+1;
+        int normalGroup = (totalStudent - count) / groupSize;
+        int index = 0;
+        for (int i = 0; i < normalGroup; i++) {
+            for(int j = 1; j <= groupSize;j++) {
+                configIndex[index] = j;
+                index++;
             }
         }
-        int normalGroup = (totalStudent - count) / groupSize;
-        configIndex[i] = 9;
-        for (int k = 0; k < normalGroup; k++) {
-            for(int l = i; l <= groupSize;l++) {
-                configIndex[j] = j;
+        for (int i = 0; i < groupplus; i++) {
+            for(int j = 1; j <= groupSize+1;j++) {
+                configIndex[index] = j;
+                index++;
             }
         }
     }
-
-
-
-
-
-
     public void printConfigList(ArrayList<Configuration> listOfConfig) {
         for(Configuration config: listOfConfig) {
             System.out.println(config);
@@ -177,7 +196,6 @@ public class Grouping {
                 }
             }
         });
-         //   ArrayList<Configuration> listConfig = new ArrayList<>();
         for(int i = 0; i < n;i++ ) {
             Configuration config = new Configuration(studentList, groupSize);
             config.generateRandomGroups();
@@ -196,7 +214,6 @@ public class Grouping {
             if(pq.size() > 100) {
                 pq.poll();
             }
-           // System.out.println(config.getConfigScore() + "," + config.getSD());
         }
         class CustomComparator implements Comparator<Configuration> {
             @Override
