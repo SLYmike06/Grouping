@@ -72,16 +72,23 @@ public class Configuration {
     }
 
     public void generateSpecificGroup(int[] index, int[] template) {
-       for(int i = 0; i < index.length;i++) {
-           Group nwGroup = new Group();
-           ArrayList<Student> groupStudents = new ArrayList<>();
-           for (int j = 0; j < (groupSize+1); j++) {
-               groupStudents.add(studentList.get(index[0]));
-           }
-           nwGroup.setStudentList(groupStudents);
-           nwGroup.score();
-           scores.add(nwGroup.getScore());
-           groupList.add(nwGroup);
+        for(int i = 0; i < index.length;i++) {
+         //   if(template[i] == 1) {
+                Group nwGroup = new Group();
+                ArrayList<Student> groupStudents = new ArrayList<>();
+                groupStudents.add(studentList.get(index[i]));
+                i++;
+                while(i < template.length && template[i] != 1) {
+                    groupStudents.add(studentList.get(index[i]));
+                    i++;
+                }
+                nwGroup.setStudentList(groupStudents);
+                nwGroup.score();
+                scores.add(nwGroup.getScore());
+                groupList.add(nwGroup);
+                i--;
+
+           // }
        }
     }
 

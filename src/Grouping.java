@@ -12,19 +12,25 @@ import java.util.concurrent.TimeUnit;
 
 public class Grouping {
     public static void main(String[] args) throws IOException {
-       // double start = System.nanoTime() / Math.pow(10,9);
+        double start = System.nanoTime() / Math.pow(10,9);
         Grouping test = new Grouping();
        // test.generateNConfig(100000000);
       //  Configuration con = test.pickTopConfigs();
       //  test.printConfigInfo(con);
-       // double end = System.nanoTime() / Math.pow(10,9);
-       // System.out.println(end - start);
-        test.inputConfigIndex(10,3);
-        int[] arr = new int[10];
-        test.generateAllCombinations(test.configIndex,10,0,arr,0);
-        for(int[] d: test.indexs) {
-            System.out.println(Arrays.toString(d));
-        }
+        test.inputConfigIndex(test.num,test.groupSize);
+        int[] arr = new int[test.num];
+        test.generateAllCombinations(test.configIndex,test.num,0,arr,0);
+        System.out.println("dadawdadawdaw");
+        test.generateConfigs();
+        System.out.println("11111111");
+        Configuration con = test.pickBestConfig();
+        test.printConfigInfo(con);
+        double end = System.nanoTime() / Math.pow(10,9);
+        System.out.println(end - start);
+
+        //for(int[] d: test.indexs) {
+      //      System.out.println(Arrays.toString(d));
+      //  }
     }
     private int num;
     private int groupSize;
@@ -44,7 +50,7 @@ public class Grouping {
         groupSize = 0;
         readFile();
         verifyData();
-        configIndex = new int[num-10];
+        configIndex = new int[num];
     }
 
     public int getGroupSize() {
@@ -122,13 +128,44 @@ public class Grouping {
             config.setAllGP(testGroupsList);
             config.setSD(sd.SD());
             allCon.add(config);
+            this.configs.add(config);
         }
         return allCon;
+    }
+
+    public Configuration pickBestConfig() {
+        PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
+            public int compare(Configuration s1, Configuration s2) {
+                if(s1.getConfigScore() < s2.getConfigScore()) {
+                    return -1;
+                } else if(s1.getConfigScore() > s2.getConfigScore()) {
+                    return 1;
+                } else {
+                    if(s1.getSD() < s2.getSD()) {
+                        return 1;
+                    } else if(s1.getSD() > s2.getSD()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            }
+        });
+        for(int i = 0; i < configs.size();i++) {
+            pq.add(configs.get(i));
+            if(pq.size() > 100) {
+                pq.remove();
+            }
+        }
+        return pq.peek();
     }
 
     public void generateAllCombinations(int[] lookup, int totalElem, int currIndex,int[] total, int lastElem) {
         int[] copy = Arrays.copyOf(total,total.length);
         if(currIndex == totalElem) {
+            if(indexs.size() % 1000000 == 0) {
+                System.out.println("size: " + indexs.size());
+            }
             indexs.add(copy);
         } else if(lookup[currIndex] == 1) {
            int i = 1;
