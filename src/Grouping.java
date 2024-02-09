@@ -20,8 +20,8 @@ public class Grouping {
         test.inputConfigIndex(test.num,test.groupSize);
         int[] arr = new int[test.num];
         test.generateAllCombinations(test.configIndex,test.num,0,arr,0);
+     //   test.generateAllCombinations(new int[]{1, 2, 3, 1, 2, 3, 1, 2, 3},9,0,arr,0);
         System.out.println("dadawdadawdaw");
-        test.generateConfigs();
         System.out.println("11111111");
         Configuration con = test.pickBestConfig();
         test.printConfigInfo(con);
@@ -199,13 +199,10 @@ public class Grouping {
             StandardDeviation sd = new StandardDeviation(scores);
             config.setAllGP(testGroupsList);
             config.setSD(sd.SD());
-            for(int i = 0; i < configs.size();i++) {
-                pq.add(configs.get(i));
-                if(pq.size() > 100) {
-                    pq.remove();
-                }
+            pq.add(config);
+            if(pq.size() > 100) {
+                pq.remove();
             }
-
         } else if(lookup[currIndex] == 1) {
            int i = 1;
            while(contain(total, i)) {

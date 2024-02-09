@@ -67,8 +67,6 @@ public class Configuration {
             scores.add(nwGroup.getScore());
             groupList.add(nwGroup);
         }
-
-
     }
 
     public void generateSpecificGroup(int[] index, int[] template) {
