@@ -153,30 +153,14 @@ public class Grouping {
     }
 
     public Configuration pickBestConfig() {
-//        PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
-//            public int compare(Configuration s1, Configuration s2) {
-//                if(s1.getConfigScore() < s2.getConfigScore()) {
-//                    return -1;
-//                } else if(s1.getConfigScore() > s2.getConfigScore()) {
-//                    return 1;
-//                } else {
-//                    if(s1.getSD() < s2.getSD()) {
-//                        return 1;
-//                    } else if(s1.getSD() > s2.getSD()) {
-//                        return -1;
-//                    } else {
-//                        return 0;
-//                    }
-//                }
-//            }
-//        });
-//        for(int i = 0; i < configs.size();i++) {
-//            pq.add(configs.get(i));
-//            if(pq.size() > 100) {
-//                pq.remove();
-//            }
-//        }
-        return pq.peek();
+            Configuration best = pq.peek();
+            for(Configuration current: pq) {
+                if(current.getConfigScore() > best.getConfigScore()) {
+                    best = current;
+                }
+            }
+
+        return best;
     }
 
     public void generateAllCombinations(int[] lookup, int totalElem, int currIndex,int[] total, int lastElem) {
