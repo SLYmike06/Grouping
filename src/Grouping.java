@@ -40,9 +40,27 @@ public class Grouping {
     private int[] configIndex;
 
     private ArrayList<int[]> indexs;
+    private  PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
+        public int compare(Configuration s1, Configuration s2) {
+            if(s1.getConfigScore() < s2.getConfigScore()) {
+                return -1;
+            } else if(s1.getConfigScore() > s2.getConfigScore()) {
+                return 1;
+            } else {
+                if(s1.getSD() < s2.getSD()) {
+                    return 1;
+                } else if(s1.getSD() > s2.getSD()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        }
+    });
+    private int configCount;
 
 
-    public Grouping() {
+        public Grouping() {
         studentList = new ArrayList<>();
         configs = new ArrayList<>();
         indexs = new ArrayList<>();
@@ -51,6 +69,7 @@ public class Grouping {
         readFile();
         verifyData();
         configIndex = new int[num];
+        configCount = 0;
     }
 
     public int getGroupSize() {
@@ -134,39 +153,59 @@ public class Grouping {
     }
 
     public Configuration pickBestConfig() {
-        PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
-            public int compare(Configuration s1, Configuration s2) {
-                if(s1.getConfigScore() < s2.getConfigScore()) {
-                    return -1;
-                } else if(s1.getConfigScore() > s2.getConfigScore()) {
-                    return 1;
-                } else {
-                    if(s1.getSD() < s2.getSD()) {
-                        return 1;
-                    } else if(s1.getSD() > s2.getSD()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                }
-            }
-        });
-        for(int i = 0; i < configs.size();i++) {
-            pq.add(configs.get(i));
-            if(pq.size() > 100) {
-                pq.remove();
-            }
-        }
+//        PriorityQueue<Configuration> pq = new PriorityQueue<Configuration>(new Comparator<Configuration>() {
+//            public int compare(Configuration s1, Configuration s2) {
+//                if(s1.getConfigScore() < s2.getConfigScore()) {
+//                    return -1;
+//                } else if(s1.getConfigScore() > s2.getConfigScore()) {
+//                    return 1;
+//                } else {
+//                    if(s1.getSD() < s2.getSD()) {
+//                        return 1;
+//                    } else if(s1.getSD() > s2.getSD()) {
+//                        return -1;
+//                    } else {
+//                        return 0;
+//                    }
+//                }
+//            }
+//        });
+//        for(int i = 0; i < configs.size();i++) {
+//            pq.add(configs.get(i));
+//            if(pq.size() > 100) {
+//                pq.remove();
+//            }
+//        }
         return pq.peek();
     }
 
     public void generateAllCombinations(int[] lookup, int totalElem, int currIndex,int[] total, int lastElem) {
         int[] copy = Arrays.copyOf(total,total.length);
         if(currIndex == totalElem) {
-            if(indexs.size() % 1000000 == 0) {
-                System.out.println("size: " + indexs.size());
+            configCount++;
+            if(configCount % 1000000 == 0) {
+                System.out.println("size: " + configCount);
             }
-            indexs.add(copy);
+            Configuration config = new Configuration(studentList, groupSize);
+            config.generateSpecificGroup(copy,configIndex);
+            ArrayList<Group> testGroupsList = config.getAllGP();
+            config.score();
+            config.setConfigScore(config.getConfigScore());
+            ArrayList<Integer>scores = new ArrayList<Integer>();
+            for(int j = 0; j < testGroupsList.size();j++) {
+                scores.add(testGroupsList.get(j).getScore());
+            }
+            config.setScores(scores);
+            StandardDeviation sd = new StandardDeviation(scores);
+            config.setAllGP(testGroupsList);
+            config.setSD(sd.SD());
+            for(int i = 0; i < configs.size();i++) {
+                pq.add(configs.get(i));
+                if(pq.size() > 100) {
+                    pq.remove();
+                }
+            }
+
         } else if(lookup[currIndex] == 1) {
            int i = 1;
            while(contain(total, i)) {
