@@ -22,7 +22,7 @@ public class Grouping {
         test.generateAllCombinations(test.configIndex,test.num,0,arr,0);
      //   test.generateAllCombinations(new int[]{1, 2, 3, 1, 2, 3, 1, 2, 3},9,0,arr,0);
         System.out.println("dadawdadawdaw");
-        System.out.println("11111111");
+        System.out.println(test.ct);
         Configuration con = test.pickBestConfig();
         test.printConfigInfo(con);
         double end = System.nanoTime() / Math.pow(10,9);
@@ -33,6 +33,7 @@ public class Grouping {
       //  }
     }
     private int num;
+    private int ct;
     private int groupSize;
     private ArrayList<Student> studentList;
 
@@ -65,6 +66,7 @@ public class Grouping {
         configs = new ArrayList<>();
         indexs = new ArrayList<>();
         num = 0;
+        ct = 0;
         groupSize = 0;
         readFile();
         verifyData();
@@ -183,6 +185,9 @@ public class Grouping {
             StandardDeviation sd = new StandardDeviation(scores);
             config.setAllGP(testGroupsList);
             config.setSD(sd.SD());
+                if(config.configScore == 0) {
+                    ct++;
+                }
             pq.add(config);
             if(pq.size() > 100) {
                 pq.remove();
